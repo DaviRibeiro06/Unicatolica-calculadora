@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Web Service</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        input, select, button {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            max-width: 300px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result-tab {
+            display: none;
+            margin-top: 20px;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .result-tab h2 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+            color: #333;
+        }
+        .result-tab .result-content {
+            font-size: 18px;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora</h1>
+        <select id="operacao">
+            <option value="soma">Soma</option>
+            <option value="subtracao">Subtração</option>
+            <option value="multiplicacao">Multiplicação</option>
+            <option value="divisao">Divisão</option>
+        </select>
+        <input type="number" id="n1" placeholder="Primeiro número">
+        <input type="number" id="n2" placeholder="Segundo número">
+        <button onclick="calcular()">Calcular</button>
+        
+        <div class="result-tab" id="result-tab">
+            <h2>Resultado</h2>
+            <div class="result-content" id="resultado"></div>
+        </div>
+    </div>
+
+    <script>
+        async function calcular() {
+            const operacao = document.getElementById('operacao').value;
+            const n1 = document.getElementById('n1').value;
+            const n2 = document.getElementById('n2').value;
+
+            if (!n1 || !n2) {
+                alert('Por favor, insira os dois números.');
+                return;
+            }
+
+            const response = await fetch(`http://localhost:3000/calculadora?operacao=${operacao}&n1=${n1}&n2=${n2}`);
+            const data = await response.json();
+
+            const resultTab = document.getElementById('result-tab');
+            const resultContent = document.getElementById('resultado');
+
+            if (response.ok) {
+                resultContent.innerText = `${data.resultado}`;
+            } else {
+                resultContent.innerText = `Erro: ${data.error}`;
+            }
+
+            resultTab.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
